@@ -1,0 +1,75 @@
+div:not(.unslider) > .slidemonger {
+	display: none;/* hide before JS adds the syles */
+}
+.unslider {
+	overflow: auto;
+	margin: 0;
+	padding: 0;
+	position: relative;
+}
+.unslider-wrap {
+	position: relative;
+	max-width: none;
+}
+.unslider-wrap.unslider-carousel li {
+	float: left;
+}
+.unslider-vertical>ul {
+	height: 100%;
+}
+.unslider-vertical li {
+	float: none;
+	width: 100%;
+}
+.unslider-fade {
+	position: relative;
+}
+.unslider-fade .unslider-wrap li {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	z-index: 8;
+}
+.unslider-fade .unslider-wrap li.unslider-active {
+	z-index: 10;
+}
+.unslider li,.unslider ol,.unslider ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+.unslider-arrow {
+	position: absolute;
+	left: 20px;
+	z-index: 2;
+	cursor: pointer;
+	margin: 1em;
+}
+.unslider-arrow.next {
+	left: auto;
+	right: 20px;
+}
+.unslider-nav ol {
+	text-align: center;
+}
+.unslider-nav ol li {
+	display: inline-block;
+	background: center/contain no-repeat transparent;
+	overflow: hidden;
+	text-indent: -999em;
+	cursor: pointer;
+}
+.rc-slider:not(.custom-nav) ~ .unslider-nav ol li {
+	width: 1ex;
+	height: 1ex;
+	margin: 1ex;
+	border-radius: 50%;
+	border: 1px solid #fff;
+	box-sizing: border-box;
+}
+.rc-slider:not(.custom-nav) ~ .unslider-nav ol li.unslider-active {
+	background: #fff;
+	cursor: default;
+}
