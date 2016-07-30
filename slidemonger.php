@@ -50,7 +50,8 @@ function slidemonger( $a, $c = '' ) {
 	
 	$class = !empty( $a['class'] ) ? " {$a['class']}" : "";
 	
-	return "<div id='{$selector}' class='slidemonger{$class}'>{$c}</div>";
+	$out = "<div id='{$selector}' class='slidemonger{$class}'>" . do_shortcode( $c ) . "</div>";
+	return $out;
 }
 
 
