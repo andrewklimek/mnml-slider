@@ -11,20 +11,20 @@ div:not(.unslider) > .slidemonger {
 	position: relative;
 	max-width: none;
 }
-.unslider-wrap.unslider-carousel li {
+.unslider-wrap.unslider-carousel > li {
 	float: left;
 }
-.unslider-vertical>ul {
+.unslider-vertical > ul {
 	height: 100%;
 }
-.unslider-vertical li {
+.unslider-vertical > ul > li {
 	float: none;
 	width: 100%;
 }
 .unslider-fade {
 	position: relative;
 }
-.unslider-fade .unslider-wrap li {
+.unslider-fade .unslider-wrap > li {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -34,7 +34,7 @@ div:not(.unslider) > .slidemonger {
 .unslider-fade .unslider-wrap li.unslider-active {
 	z-index: 10;
 }
-.unslider li,.unslider ol,.unslider ul {
+.unslider-wrap, .unslider-wrap > li, .unslider-nav > ol {
 	list-style: none;
 	margin: 0;
 	padding: 0;
@@ -51,17 +51,17 @@ div:not(.unslider) > .slidemonger {
 	left: auto;
 	right: 20px;
 }
-.unslider-nav ol {
+.unslider-nav > ol {
 	text-align: center;
 }
-.unslider-nav ol li {
+.unslider-nav > ol > li {
 	display: inline-block;
 	background: center/contain no-repeat transparent;
 	overflow: hidden;
 	text-indent: -999em;
 	cursor: pointer;
 }
-.rc-slider:not(.custom-nav) ~ .unslider-nav ol li {
+.rc-slider:not(.custom-nav) ~ .unslider-nav > ol > li {
 	width: 1ex;
 	height: 1ex;
 	margin: 1ex;
@@ -69,7 +69,7 @@ div:not(.unslider) > .slidemonger {
 	border: 1px solid #fff;
 	box-sizing: border-box;
 }
-.rc-slider:not(.custom-nav) ~ .unslider-nav ol li.unslider-active {
+.rc-slider:not(.custom-nav) ~ .unslider-nav li.unslider-active {
 	background: #fff;
 	cursor: default;
 }

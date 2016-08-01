@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Slidemonger
+Plugin Name: Slide Monger
 Description: Lightweight & simple shortcode [slidemonger]
 Version:     0.1
 Author:      Andrew J Klimek
