@@ -1,6 +1,7 @@
 <?php
 /*
 Plugin Name: Slide Monger
+Plugin URI:  https://github.com/andrewklimek/slidemonger/
 Description: Lightweight & simple shortcode [slidemonger]
 Version:     0.1
 Author:      Andrew J Klimek
