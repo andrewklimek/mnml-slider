@@ -3,6 +3,7 @@
 Plugin Name: Slide Monger
 Description: Lightweight & simple shortcode [slidemonger]
 Version:     0.1
+Plugin URI:  https://github.com/andrewklimek/slidemonger/
 Author:      Andrew J Klimek
 Author URI:  https://readycat.net
 License:     GPL2
