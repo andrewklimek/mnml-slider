@@ -1,7 +1,6 @@
 <?php
 /*
 Plugin Name: Slide Monger
-Plugin URI:  https://github.com/andrewklimek/slidemonger/
 Description: Lightweight & simple shortcode [slidemonger]
 Version:     0.1
 Author:      Andrew J Klimek
@@ -57,6 +56,6 @@ function slidemonger( $a, $c = '' ) {
 
 
 function slidemonger_scripts() {
-	wp_register_script( 'unslider', plugin_dir_url( __FILE__ ) . 'unslider/unslider-min.js', array('jquery'), '2.0.3' );
-	wp_register_style( 'unslider', plugin_dir_url( __FILE__ ) . 'slidemonger.css', array(), filemtime( plugin_dir_path( __FILE__ ).'slidemonger.css' ) );
+	wp_register_script( 'unslider', plugin_dir_url( __FILE__ ) . 'unslider/unslider-min.js', array('jquery'), null );
+	wp_register_style( 'unslider', plugin_dir_url( __FILE__ ) . 'slidemonger.css', array(), null );
 }
