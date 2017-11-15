@@ -5,7 +5,7 @@ Description: Lightweight & simple shortcode [slidemonger]
 Version:     0.1
 Plugin URI:  https://github.com/andrewklimek/slidemonger/
 Author:      Andrew J Klimek
-Author URI:  https://readycat.net
+Author URI:  https://github.com/andrewklimek
 License:     GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
