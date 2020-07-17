@@ -2,8 +2,8 @@
 /*
 Plugin Name: Minimalist Slider
 Description: a very light-weight slider plugin.  Shortcode [mnmlslider slide='.hentry' track='.mnmlslider']
-Version:     0.1
-Plugin URI:  
+Version:     0.2
+Plugin URI:  https://github.com/andrewklimek/mnml-slider
 Author:      Andrew J Klimek
 Author URI:  https://github.com/andrewklimek
 License:     GPL2
@@ -22,25 +22,23 @@ Minimalist Slider. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
 */
 
 
-/*
-
-TODO:
-Add option to specify number of slides per page and maybe what pixel it switches to 1
-Add option for seconds between transition
-*/
-
 function mnmlslider($a, $c){
 	
 	$id = 'mnmlslider-' . mt_rand();
 	
 	$selector = !empty( $a['slide'] ) ? $a['slide'] : "article";
 	$track = !empty( $a['track'] ) ? $a['track'] : ".mnmlslider-inner";
+	$max_width = !empty( $a['max_width'] ) ? $a['max_width'] : 220;
+	$max_columns = !empty( $a['max_columns'] ) ? $a['max_columns'] : 6;
+	$time = !empty( $a['time'] ) ? $a['time'] : 500;
+	$auto_scroll = empty( $a['auto'] ) ? 0 : ( is_numeric($a['auto']) ? $a['auto'] : ( "true" === $a['auto'] ? 6000 : 0 ) );
+	$buttons = !empty( $a['buttons'] ) ? $a['buttons'] : "right";
 
 	ob_start();
 	
 	?>
 	<div id=<?php echo $id ?> style=overflow-x:hidden>
-	<div class=r>
+	<div class=mnmlslider-arrows>
 	<button class=mnmlslider-prev><div class=mnmlslider-arrow></div></button>
 	<button class=mnmlslider-next><div class=mnmlslider-arrow></div></button>
 	</div>
@@ -52,6 +50,7 @@ function mnmlslider($a, $c){
 	?>
 	</div>
 	<style>
+	.mnmlslider-arrows{text-align:<?php echo $buttons; ?>}
 	.mnmlslider-arrow {
 		width: 1rem;
 		height: 1rem;
@@ -60,25 +59,13 @@ function mnmlslider($a, $c){
 		border-width: 0 0 2px 2px;
 		transform: rotate(45deg);
 	}
-	.mnmlslider-prev,
-	.mnmlslider-next {
-		padding: 1rem 0 1rem 1rem;
-		background: none;
-	}
-	.mnmlslider-next {
-		transform: rotate(180deg);
-	}
-	/*@media(min-width:330px){*/
-	<?php echo "#{$id} {$track}"; ?>{display:-ms-flexbox;display:flex;transition:transform linear .5s;position:relative}
+	.mnmlslider-prev,.mnmlslider-next{padding:1rem 0 1rem 1rem;background:none}
+	.mnmlslider-next {transform:rotate(180deg)}
+	<?php echo "#{$id} {$track}"; ?>{display:-ms-flexbox;display:flex;transition:transform linear <?php echo $time; ?>ms;position:relative}
 	<?php echo "#{$id} {$selector}"; ?>{width:50%;-ms-flex:0 0 auto;flex:none}
-	/*}*/
-	@media(min-width:660px){<?php echo "#{$id} {$selector}"; ?>{width:33.33%}}
-	@media(min-width:880px){<?php echo "#{$id} {$selector}"; ?>{width:25%}}
-	@media(min-width:1100px){<?php echo "#{$id} {$selector}"; ?>{width:20%}}
-	@media(min-width:1320px){<?php echo "#{$id} {$selector}"; ?>{width:16.67%}}
-	/*@media(max-width:899){
-	.quickcat-container{transform: translateX(0) !important;}
-	}*/
+	<?php for ( $i = 2; $i <= $max_columns; ++$i ) {
+		echo "@media(min-width:" . strval($i * $max_width) . "px){#{$id} {$selector}{width:" . strval(100 / $i) . "%}}";
+	} ?>
 	</style>
 	<script>(function(){
 	var instance = document.getElementById('<?php echo $id; ?>')
@@ -86,79 +73,44 @@ function mnmlslider($a, $c){
 		, slides = track.children
 		, os = 0
 		, touch;
-		
 	
-	// copy first 3 slides to end for infinite loop effect
-	if ( slides.length > 5 ) {
-	track.insertAdjacentHTML('beforeend', slides[0].outerHTML + slides[1].outerHTML + slides[2].outerHTML + slides[3].outerHTML + slides[4].outerHTML + slides[5].outerHTML);
+	if ( slides.length >= <?php echo $max_columns; ?> ) {
+	<?php
+	// copy first n slides to end for infinite loop effect	
+		$duplicate_slides = [];
+		for ( $i = 0; $i < $max_columns; ++$i ) $duplicate_slides[] = "slides[{$i}].outerHTML";
+		echo "track.insertAdjacentHTML('beforeend', " . implode( "+", $duplicate_slides ) . ");";
+	?>
 	}
 	track.addEventListener('touchstart', function(e){ touch=e.changedTouches[0].pageX; });
 	track.addEventListener('touchend', function(e){ touch-=e.changedTouches[0].pageX; touch < -60 ? next(1) : touch > 60 ? next(0) : touch=0; });
 	
-	function next(prev)
-	{	
+	function next(prev) {
 		prev?--os:++os;
 		if(os<0)os=0;
-	
 		track.style.transition='';
-		// track.style.transform = 'translateX(-'+ os * 100 / 6 +'%)';
-		track.style.transform = 'translateX(-'+ os * 100 / Math.max( 2, Math.min( 6, Math.floor(innerWidth / 220) ) ) +'%)';
+		track.style.transform = 'translateX(-'+ os * 100 / Math.max( 2, Math.min( <?php echo $max_columns; ?>, Math.floor(innerWidth / <?php echo $max_width; ?>) ) ) +'%)';
 		
-		if ( slides.length > 5 && os > slides.length - 7 ) setTimeout( function(){	
+		if ( slides.length > <?php echo $max_columns - 1; ?> && os > slides.length - <?php echo $max_columns + 1; ?> ) setTimeout( function(){	
 			os = 0;
 			track.style.transition = 'none';
 			track.style.transform = '';
-		}, 500 );
+		}, <?php echo $time; ?> );
 	}
-	
 	instance.querySelector('.mnmlslider-prev').addEventListener('click', function(){ next(1) });
 	instance.querySelector('.mnmlslider-next').addEventListener('click', function(){ next(0) });
+	<?php
+	if ( $auto_scroll ) {
+		echo "iid=setInterval(next,{$auto_scroll});
+		document.addEventListener('visibilitychange',function(){document.hidden ? clearInterval(iid) : (iid=setInterval(next,{$auto_scroll}));});";
+	}
+	?>
 	})();</script>
 	</div>
 	<?php
 	
-	/**** Before Minified
-	
-	var track = document.querySelector('.mnmonials-track')
-		, slides = track.children
-		// , slideNo = slides.length - 1
-		, os = 0
-		, iid, touch;
-		
-	
-	// copy first 3 slides to end for infinite loop effect
-	track.insertAdjacentHTML('beforeend', slides[0].outerHTML + slides[1].outerHTML + slides[2].outerHTML );
-	
-	iid=setInterval(next,6e3);
-	
-	document.addEventListener('visibilitychange',function(){document.hidden ? clearInterval(iid) : (iid=setInterval(next,6e3));});
-	
-	track.addEventListener('touchstart', function(e){ touch=e.changedTouches[0].pageX; });
-	track.addEventListener('touchend', function(e){ touch-=e.changedTouches[0].pageX; touch < -60 ? next(1) : touch > 60 ? next() : touch=0; touch && clearInterval(iid); });
-	
-	function next(prev)
-	{	
-		prev?--os:++os;
-		if(os<0)os=0;
-	
-		track.style.transition='';
-		// track.style.transform = 'translateX(-'+ os * 100 / Math.min( 3, Math.floor(innerWidth / 300) ) +'%)';
-		track.style.transform = 'translateX(-'+ os * 100 / (innerWidth < 900 ? 1 : 3) +'%)';
-		
-		if ( os > slides.length - 4 ) setTimeout( function(){	
-			os = 0;
-			track.style.transition = 'none';
-			track.style.transform = '';
-		}, 3e3 );
-	}
-	
-	** End Before Minified */
-
-	
-	
 	$return = ob_get_clean();
 
-	
 	return $return;
 	
 }
