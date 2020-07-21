@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Minimalist Slider
-Description: a very light-weight slider plugin.  Shortcode defaults: [mnmlslider slide='article' track='.mnmlslider-inner' max_width=220 max_columns=6 time=500 auto=6000 buttons=right]
-Version:     0.5
+Description: a very light-weight slider plugin.  Shortcode defaults: [mnmlslider track='.mnmlslider-inner' slide='{$track} > *' max_width=220 max_columns=6 time=500 auto=6000 buttons=right]
+Version:     0.6
 Plugin URI:  https://github.com/andrewklimek/mnml-slider
 Author:      Andrew J Klimek
 Author URI:  https://github.com/andrewklimek
@@ -26,8 +26,8 @@ function mnmlslider($a, $c){
 	
 	$id = 'mnmlslider-' . mt_rand();
 	
-	$selector = !empty( $a['slide'] ) ? $a['slide'] : "article";
 	$track = !empty( $a['track'] ) ? $a['track'] : ".mnmlslider-inner";
+	$selector = !empty( $a['slide'] ) ? $a['slide'] : "{$track}>*";
 	$max_width = !empty( $a['max_width'] ) ? $a['max_width'] : 220;
 	$max_columns = !empty( $a['max_columns'] ) ? $a['max_columns'] : 6;
 	$time = !empty( $a['time'] ) ? $a['time'] : 500;
