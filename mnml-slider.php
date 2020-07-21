@@ -2,7 +2,7 @@
 /*
 Plugin Name: Minimalist Slider
 Description: a very light-weight slider plugin.  Shortcode [mnmlslider slide='.hentry' track='.mnmlslider']
-Version:     0.2
+Version:     0.4
 Plugin URI:  https://github.com/andrewklimek/mnml-slider
 Author:      Andrew J Klimek
 Author URI:  https://github.com/andrewklimek
@@ -21,7 +21,6 @@ You should have received a copy of the GNU General Public License along with
 Minimalist Slider. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
 */
 
-
 function mnmlslider($a, $c){
 	
 	$id = 'mnmlslider-' . mt_rand();
@@ -32,16 +31,18 @@ function mnmlslider($a, $c){
 	$max_columns = !empty( $a['max_columns'] ) ? $a['max_columns'] : 6;
 	$time = !empty( $a['time'] ) ? $a['time'] : 500;
 	$auto_scroll = empty( $a['auto'] ) ? 0 : ( is_numeric($a['auto']) ? $a['auto'] : ( "true" === $a['auto'] ? 6000 : 0 ) );
-	$buttons = !empty( $a['buttons'] ) ? $a['buttons'] : "right";
+	$buttons = empty( $a['buttons'] ) ? "right" : ( $a['buttons'] === "false" || $a['buttons'] === "none" ? 0 : $a['buttons'] );
 
 	ob_start();
-	
+
 	?>
 	<div id=<?php echo $id ?> style=overflow-x:hidden>
+	<?php if ( $buttons ) : ?>
 	<div class=mnmlslider-arrows>
 	<button class=mnmlslider-prev><div class=mnmlslider-arrow></div></button>
 	<button class=mnmlslider-next><div class=mnmlslider-arrow></div></button>
 	</div>
+	<?php endif; ?>
 	<div class=mnmlslider-inner>
 	<?php
 	
@@ -72,7 +73,7 @@ function mnmlslider($a, $c){
 		, track = instance.querySelector('<?php echo $track; ?>')
 		, slides = track.children
 		, os = 0
-		, touch;
+		, travel;
 	
 	if ( slides.length >= <?php echo $max_columns; ?> ) {
 	<?php
@@ -82,10 +83,13 @@ function mnmlslider($a, $c){
 		echo "track.insertAdjacentHTML('beforeend', " . implode( "+", $duplicate_slides ) . ");";
 	?>
 	}
-	track.addEventListener('touchstart', function(e){ touch=e.changedTouches[0].pageX; });
-	track.addEventListener('touchend', function(e){ touch-=e.changedTouches[0].pageX; touch < -60 ? next(1) : touch > 60 ? next(0) : touch=0; });
-	
+	track.addEventListener('touchstart',function(e){e.preventDefault();travel=e.changedTouches[0].pageX;});
+	track.addEventListener('touchend',function(e){travel-=e.changedTouches[0].pageX; travel < -60 ? next(1) : travel > 60 ? next(0) : travel=0; travel || e.target.click();});
+	track.addEventListener('mousedown',function(e){e.preventDefault(); travel=e.pageX;});
+	track.addEventListener('mouseup',function(e){travel-=e.pageX; travel < -30 ? next(1) : travel > 30 ? next(0) : travel=0;});
+	track.addEventListener('click',function(e){travel && e.preventDefault();});
 	function next(prev) {
+		<?php if ( $auto_scroll ) echo "clearInterval(iid);iid=setInterval(next,{$auto_scroll});"; ?>
 		prev?--os:++os;
 		if(os<0)os=0;
 		track.style.transition='';
@@ -97,13 +101,14 @@ function mnmlslider($a, $c){
 			track.style.transform = '';
 		}, <?php echo $time; ?> );
 	}
-	instance.querySelector('.mnmlslider-prev').addEventListener('click', function(){ next(1) });
-	instance.querySelector('.mnmlslider-next').addEventListener('click', function(){ next(0) });
 	<?php
-	if ( $auto_scroll ) {
-		echo "iid=setInterval(next,{$auto_scroll});
-		document.addEventListener('visibilitychange',function(){document.hidden ? clearInterval(iid) : (iid=setInterval(next,{$auto_scroll}));});";
-	}
+	if ( $buttons )
+		echo "instance.querySelector('.mnmlslider-prev').addEventListener('click', function(){ next(1) });"
+		. "instance.querySelector('.mnmlslider-next').addEventListener('click', function(){ next(0) });";
+	
+	if ( $auto_scroll )
+		echo "iid=setInterval(next,{$auto_scroll});"
+		. "document.addEventListener('visibilitychange',function(){document.hidden ? clearInterval(iid) : (iid=setInterval(next,{$auto_scroll}));});";
 	?>
 	})();</script>
 	</div>
@@ -115,4 +120,3 @@ function mnmlslider($a, $c){
 	
 }
 add_shortcode( 'mnmlslider', 'mnmlslider');
-
