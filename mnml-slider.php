@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Minimalist Slider
-Description: a very light-weight slider plugin.  Shortcode [mnmlslider slide='.hentry' track='.mnmlslider']
-Version:     0.4
+Description: a very light-weight slider plugin.  Shortcode defaults: [mnmlslider slide='article' track='.mnmlslider-inner' max_width=220 max_columns=6 time=500 auto=6000 buttons=right]
+Version:     0.5
 Plugin URI:  https://github.com/andrewklimek/mnml-slider
 Author:      Andrew J Klimek
 Author URI:  https://github.com/andrewklimek
@@ -20,6 +20,7 @@ particular purpose. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with 
 Minimalist Slider. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
 */
+
 
 function mnmlslider($a, $c){
 	
@@ -73,7 +74,8 @@ function mnmlslider($a, $c){
 		, track = instance.querySelector('<?php echo $track; ?>')
 		, slides = track.children
 		, os = 0
-		, travel;
+		, travel
+		, mouse;
 	
 	if ( slides.length >= <?php echo $max_columns; ?> ) {
 	<?php
@@ -83,11 +85,11 @@ function mnmlslider($a, $c){
 		echo "track.insertAdjacentHTML('beforeend', " . implode( "+", $duplicate_slides ) . ");";
 	?>
 	}
-	track.addEventListener('touchstart',function(e){e.preventDefault();travel=e.changedTouches[0].pageX;});
-	track.addEventListener('touchend',function(e){travel-=e.changedTouches[0].pageX; travel < -60 ? next(1) : travel > 60 ? next(0) : travel=0; travel || e.target.click();});
-	track.addEventListener('mousedown',function(e){e.preventDefault(); travel=e.pageX;});
-	track.addEventListener('mouseup',function(e){travel-=e.pageX; travel < -30 ? next(1) : travel > 30 ? next(0) : travel=0;});
-	track.addEventListener('click',function(e){travel && e.preventDefault();});
+	track.addEventListener('touchstart',function(e){travel=e.changedTouches[0].pageX;});
+	track.addEventListener('touchend',function(e){travel-=e.changedTouches[0].pageX; travel < -60 ? next(1) : travel > 60 ? next(0) : travel=0;});
+	track.addEventListener('mousedown',function(e){e.preventDefault(); mouse=e.pageX;});
+	track.addEventListener('mouseup',function(e){mouse-=e.pageX; mouse < -30 ? next(1) : mouse > 30 ? next(0) : mouse=0;});
+	track.addEventListener('click',function(e){mouse && e.preventDefault();});
 	function next(prev) {
 		<?php if ( $auto_scroll ) echo "clearInterval(iid);iid=setInterval(next,{$auto_scroll});"; ?>
 		prev?--os:++os;
@@ -120,3 +122,4 @@ function mnmlslider($a, $c){
 	
 }
 add_shortcode( 'mnmlslider', 'mnmlslider');
+
