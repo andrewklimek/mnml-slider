@@ -61,7 +61,7 @@ function mnmlslider($a, $c){
 		border-width: 0 0 2px 2px;
 		transform: rotate(45deg);
 	}
-	.mnmlslider-prev,.mnmlslider-next{padding:1rem 0 1rem 1rem;background:none}
+	.mnmlslider-prev,.mnmlslider-next{padding:1rem 0 1rem 1rem;background:none;outline:0;border:0}
 	.mnmlslider-next {transform:rotate(180deg)}
 	<?php echo "#{$id} {$track}"; ?>{display:-ms-flexbox;display:flex;transition:transform linear <?php echo $time; ?>ms;position:relative}
 	<?php echo "#{$id} {$selector}"; ?>{width:50%;-ms-flex:0 0 auto;flex:none}
